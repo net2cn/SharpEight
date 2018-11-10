@@ -10,6 +10,24 @@ namespace SharpEight
     {
         static void Main(string[] args)
         {
+            InitializeGraphics();
+            InitializeInputs();
+
+            Chip8 chip8 = new Chip8;
+            chip8.Initialize();
+            chip8.LoadBinaries();
+
+            while (1)
+            {
+                chip8.EmulateCycle();
+
+                if (chip8.DrawFlag)
+                {
+                    DrawGraphics();
+                }
+
+                chip8.SetKeys();
+            }
         }
     }
 }
