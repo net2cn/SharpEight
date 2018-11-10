@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace SharpEight
 {
+    /// <summary>
+    /// This class implemented a whole CHIP-8 system.
+    /// </summary>
     class Chip8
     {
         // Initialize variables.
@@ -44,13 +44,16 @@ namespace SharpEight
         public void Initialize()
         {
             // Reset variables.
-            ProgramCounter = 0x200;
+            ProgramCounter = 0x200;     // Start address program 0x200.
             Opcode = 0;
             IndexRegister = 0;
             StackPointer = 0;
 
+            // Clear screen once.
+            DrawFlag = true;
+
             // Load fontset.
-            Array.Copy(Memory, Chip8Fontset, 80);
+            Array.ConstrainedCopy(Chip8Fontset, 0, Memory, 0, Chip8Fontset.Length);
         }
 
         public void EmulateCycle()
@@ -300,6 +303,38 @@ namespace SharpEight
             if (SoundTimer > 0)
             {
                 --SoundTimer;
+            }
+        }
+
+        bool Load(string path)
+        {
+            byte[] binaries;
+            Initialize();
+            Console.WriteLine($"Loading binaries: {Path.GetFileName(path)}");
+
+            // Try loading binaries.
+            try
+            {
+                binaries = File.ReadAllBytes(path);
+            }
+            catch(Exception ex)
+            {
+                // Handle IOException.
+                Console.WriteLine($"WARNING: Load binaries ERROR! Printing stack trace...\n{ex.StackTrace}");
+                return false;
+            }
+
+            Console.WriteLine($"Binaries size: {binaries.Length}");
+            if (binaries.Length > (4096 - 512))
+            {
+                Console.WriteLine($"WARNING: Binaries are too big for CHIP-8 system's memory!");
+                return false;
+            }
+            else
+            {
+                Array.ConstrainedCopy(binaries, 0, Memory, 0 + 512,binaries.Length);
+                Console.WriteLine("Success!");
+                return true;
             }
         }
     }
