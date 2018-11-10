@@ -19,9 +19,10 @@ namespace SharpEight
         int SoundTimer = 0;
         int[] Stack = new int[16];
         int StackPointer = 0;
-        int[] Keys = new int[16];                 // HEX-based keypad (0x0 - 0xF, 16 keys);
+        public int[] Keys = new int[16];                 // HEX-based keypad (0x0 - 0xF, 16 keys);
         bool DrawFlag = false;
-        readonly int[] Chip8Fontset = new int[]           // CHIP-8 Font set. (Each charater is 4px wide and 5px high)
+
+        readonly int[] CHIP_8_FONTSET = new int[]           // CHIP-8 Font set. (Each charater is 4px wide and 5px high)
         {
             0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
             0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -53,7 +54,7 @@ namespace SharpEight
             DrawFlag = true;
 
             // Load fontset.
-            Array.ConstrainedCopy(Chip8Fontset, 0, Memory, 0, Chip8Fontset.Length);
+            Array.ConstrainedCopy(CHIP_8_FONTSET, 0, Memory, 0, CHIP_8_FONTSET.Length);
         }
 
         public void EmulateCycle()
@@ -306,7 +307,7 @@ namespace SharpEight
             }
         }
 
-        bool Load(string path)
+        public bool Load(string path)
         {
             byte[] binaries;
             Initialize();
