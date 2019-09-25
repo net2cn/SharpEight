@@ -8,11 +8,12 @@ namespace SharpEight
 {
     class Program
     {
-        readonly int SCREEN_WIDTH = 64;
-        readonly int SCREEN_HEIGHT = 32;
+        static readonly int SCREEN_WIDTH = 64;
+        static readonly int SCREEN_HEIGHT = 32;
 
         static Chip8 chip8 = new Chip8();
-        int Modifier = 10;
+        static int Modifier = 10;
+        static bool pressingFlag = false;
 
         static void Main(string[] args)
         {
@@ -31,13 +32,15 @@ namespace SharpEight
                 return;
             }
 
+            // TODO: User IO and emulation.
             InitializeGraphics();
-            InitializeInputs();
 
 
             chip8.Initialize();
 
-            while (1)
+            int pressedKey = 0;
+
+            while (true)
             {
                 chip8.EmulateCycle();
 
@@ -46,16 +49,41 @@ namespace SharpEight
                     DrawGraphics();
                 }
 
-                chip8.SetKeys();
+                // Only supports single key.
+                pressedKey = ReadKeys(ref pressingFlag);
+                
+                if (pressingFlag)
+                {
+                    KeyboardDown(pressedKey);
+                }
+                else
+                {
+                    KeyboardUp(pressedKey);
+                }
             }
         }
 
-        void InitializeGraphics()
+        static void InitializeGraphics()
         {
+            // Clear console and set it's size (64*32 char).
             Console.Clear();
+            throw new NotImplementedException();
         }
 
-        void KeyboardDown(int key,int x,int y)
+        static void DrawGraphics()
+        {
+            // Draw screen to console,
+            throw new NotImplementedException();
+        }
+
+        static int ReadKeys(ref bool flag)
+        {
+            // Read keys from console while not blocking the program.
+            // Return a integar keycode.
+            throw new NotImplementedException();
+        }
+
+        static void KeyboardDown(int key)
         {
             if(key == (int)ConsoleKey.Escape)
             {
@@ -115,7 +143,7 @@ namespace SharpEight
             }
         }
 
-        void KeyboardUp(int key,in x,int y)
+        static void KeyboardUp(int key)
         {
             switch (key)
             {

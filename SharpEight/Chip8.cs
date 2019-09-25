@@ -14,13 +14,13 @@ namespace SharpEight
         int[] Memory = new int[4096];             // Memory. (4KB in total)
         int[] Registers = new int[16];            // Registers. (V0-VE, 16 registers) V.
         int IndexRegister;                       // Index register. I.
-        int[] Gfx = new int[64 * 32];             // Screen. (64 * 32 pixels black and white screen)
+        public int[] Gfx = new int[64 * 32];             // Screen. (64 * 32 pixels black and white screen)
         int DelayTimer = 0;
         int SoundTimer = 0;
         int[] Stack = new int[16];
         int StackPointer = 0;
         public int[] Keys = new int[16];                 // HEX-based keypad (0x0 - 0xF, 16 keys);
-        bool DrawFlag = false;
+        public bool DrawFlag = false;                    // Decide whether we need to update graphics to user.
 
         readonly int[] CHIP_8_FONTSET = new int[]           // CHIP-8 Font set. (Each charater is 4px wide and 5px high)
         {
