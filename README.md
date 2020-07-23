@@ -4,9 +4,21 @@ A C# implementation of CHIP-8 emulator.
 CHIP-8 defination: https://en.wikipedia.org/wiki/CHIP-8
 
 # Usage
-None, since the user IO hasn't been implemented yet.
+```
+SharpEight.exe {ROM_PATH}
+```
 
-<br>
+This will load your CHIP-8 executable and run.
+
+You can find more ROMs at this [repo](https://github.com/dmatlack/chip8)
+
+# Screenshots
+![Maze](./img/Maze.png)
+![Brick](./img/Brick.png)
+
+# Known issues
+- Keyboard support seems to be broken.
+
 Any contributions are welcome.
 
-2019, net2cn.
+2019-2020, net2cn.

@@ -12,14 +12,16 @@ namespace SharpEight
         static readonly int SCREEN_HEIGHT = 32;
 
         static Chip8 chip8 = new Chip8();
-        static int Modifier = 10;
+        static int Modifier = 100;
         static bool pressingFlag = false;
+
+        static string gfxBuffer = "";
 
         static void Main(string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length < 1)
             {
-                Console.WriteLine("Usage: SharpEight.exe {Binary Path}");
+                Console.WriteLine("Usage: SharpEight.exe {ROM_PATH}");
                 return;
             }
 
@@ -27,9 +29,10 @@ namespace SharpEight
             chip8.Initialize();
 
             // Check if there's any IO exceptions.
-            if (!chip8.Load(args[1]))
+            if (!chip8.Load(args[0]))
             {
-                return;
+                Console.WriteLine("Exception caught when loading ROM");
+                throw new NotSupportedException();
             }
 
             // TODO: User IO and emulation.
@@ -38,7 +41,7 @@ namespace SharpEight
 
             chip8.Initialize();
 
-            int pressedKey = 0;
+            ConsoleKey pressedKey = 0;
 
             while (true)
             {
@@ -46,7 +49,8 @@ namespace SharpEight
 
                 if (chip8.DrawFlag)
                 {
-                    DrawGraphics();
+                    DrawGraphics(chip8.Gfx);
+                    chip8.DrawFlag = false;
                 }
 
                 // Only supports single key.
@@ -59,7 +63,10 @@ namespace SharpEight
                 else
                 {
                     KeyboardUp(pressedKey);
+                    pressedKey = 0;
                 }
+
+                System.Threading.Thread.Sleep(1000 / Modifier);
             }
         }
 
@@ -67,132 +74,168 @@ namespace SharpEight
         {
             // Clear console and set it's size (64*32 char).
             Console.Clear();
-            throw new NotImplementedException();
         }
 
-        static void DrawGraphics()
+        static void DrawGraphics(int[] gfxRam)
         {
-            // Draw screen to console,
-            throw new NotImplementedException();
+            int hcount = 0; // Indicates whether we need a new line.
+
+            Console.SetCursorPosition(0, 0);
+
+            string gfx = "";
+
+            foreach (int i in gfxRam){
+                if(i != 0)
+                {
+                    gfx += "X";
+                }
+                else
+                {
+                    gfx += " ";
+                }
+                hcount++;
+                if(hcount >= 64)
+                {
+                    gfx += "\n";
+                    hcount = 0;
+                }
+            }
+
+            gfxBuffer = gfx;
+
+            Console.WriteLine(gfx);
         }
 
-        static int ReadKeys(ref bool flag)
+        static ConsoleKey ReadKeys(ref bool flag)
         {
-            // Read keys from console while not blocking the program.
-            // Return a integar keycode.
-            throw new NotImplementedException();
+            flag = Console.KeyAvailable;
+            if (flag)
+            {
+                ConsoleKeyInfo key = Console.ReadKey();
+                return key.Key;
+            }
+
+            return 0;
         }
 
-        static void KeyboardDown(int key)
+        static void KeyboardDown(ConsoleKey key)
         {
-            if(key == (int)ConsoleKey.Escape)
+            if(key == ConsoleKey.Escape)
             {
                 System.Environment.Exit(0);
             }
 
             switch (key)
             {
-                case 1:
+                case ConsoleKey.D1:
+                case ConsoleKey.NumPad1:
                     chip8.Keys[0x1] = 1;
                     break;
-                case 2:
+                case ConsoleKey.D2:
+                case ConsoleKey.NumPad2:
                     chip8.Keys[0x2] = 1;
                     break;
-                case 3:
+                case ConsoleKey.D3:
+                case ConsoleKey.NumPad3:
                     chip8.Keys[0x3] = 1;
                     break;
-                case 4:
+                case ConsoleKey.D4:
+                case ConsoleKey.NumPad4:
                     chip8.Keys[0xC] = 1;
                     break;
-                case 'q':
+                case ConsoleKey.Q:
                     chip8.Keys[0x4] = 1;
                     break;
-                case 'w':
+                case ConsoleKey.W:
                     chip8.Keys[0x5] = 1;
                     break;
-                case 'e':
+                case ConsoleKey.E:
                     chip8.Keys[0x6] = 1;
                     break;
-                case 'r':
+                case ConsoleKey.R:
                     chip8.Keys[0xD] = 1;
                     break;
-                case 'a':
+                case ConsoleKey.A:
                     chip8.Keys[0x7] = 1;
                     break;
-                case 's':
+                case ConsoleKey.S:
                     chip8.Keys[0x8] = 1;
                     break;
-                case 'd':
+                case ConsoleKey.D:
                     chip8.Keys[0x9] = 1;
                     break;
-                case 'f':
+                case ConsoleKey.F:
                     chip8.Keys[0xE] = 1;
                     break;
-                case 'z':
+                case ConsoleKey.Z:
                     chip8.Keys[0xA] = 1;
                     break;
-                case 'x':
+                case ConsoleKey.X:
                     chip8.Keys[0x0] = 1;
                     break;
-                case 'c':
+                case ConsoleKey.C:
                     chip8.Keys[0xB] = 1;
                     break;
-                case 'v':
+                case ConsoleKey.V:
                     chip8.Keys[0xF] = 1;
                     break;
             }
         }
 
-        static void KeyboardUp(int key)
+        static void KeyboardUp(ConsoleKey key)
         {
             switch (key)
             {
-                case 1:
+                case ConsoleKey.D1:
+                case ConsoleKey.NumPad1:
                     chip8.Keys[0x1] = 0;
                     break;
-                case 2:
+                case ConsoleKey.D2:
+                case ConsoleKey.NumPad2:
                     chip8.Keys[0x2] = 0;
                     break;
-                case 3:
+                case ConsoleKey.D3:
+                case ConsoleKey.NumPad3:
                     chip8.Keys[0x3] = 0;
                     break;
-                case 4:
+                case ConsoleKey.D4:
+                case ConsoleKey.NumPad4:
                     chip8.Keys[0xC] = 0;
                     break;
-                case 'q':
+                case ConsoleKey.Q:
                     chip8.Keys[0x4] = 0;
                     break;
-                case 'w':
+                case ConsoleKey.W:
                     chip8.Keys[0x5] = 0;
                     break;
-                case 'e':
+                case ConsoleKey.E:
                     chip8.Keys[0x6] = 0;
                     break;
-                case 'r':
+                case ConsoleKey.R:
                     chip8.Keys[0xD] = 0;
                     break;
-                case 'a':
+                case ConsoleKey.A:
                     chip8.Keys[0x7] = 0;
                     break;
-                case 's':
+                case ConsoleKey.S:
                     chip8.Keys[0x8] = 0;
                     break;
-                case 'd':
+                case ConsoleKey.D:
                     chip8.Keys[0x9] = 0;
                     break;
-                case 'f':
+                case ConsoleKey.F:
                     chip8.Keys[0xE] = 0;
                     break;
-                case 'z':
+                case ConsoleKey.Z:
                     chip8.Keys[0xA] = 0;
                     break;
-                case 'x':
+                case ConsoleKey.X:
                     chip8.Keys[0x0] = 0;
                     break;
-                case 'c':
+                case ConsoleKey.C:
                     chip8.Keys[0xB] = 0;
                     break;
-                case 'v':
+                case ConsoleKey.V:
                     chip8.Keys[0xF] = 0;
                     break;
             }

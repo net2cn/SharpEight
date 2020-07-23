@@ -81,14 +81,14 @@ namespace SharpEight
                             break;
                         default:
                             Console.WriteLine($"Unknown OpCode [0x0000]: 0x{Opcode:X}");
-                            break;
+                            throw new InvalidOperationException();
                     }
                     break;
                 case 0x1000:    // 0x1NNN: Jumps to address NNN
                     ProgramCounter = Opcode & 0x0FFF;
                     break;
                 case 0x2000:    // 0x2NNN: Calls subroutine at NNN.
-                    Stack[ProgramCounter] = ProgramCounter;
+                    Stack[StackPointer] = ProgramCounter;
                     ++StackPointer;
                     ProgramCounter = Opcode & 0x0FFF;
                     break;
@@ -155,7 +155,7 @@ namespace SharpEight
                             break;
                         default:
                             Console.WriteLine($"Unknown Opcode [0x8000]: 0x{Opcode:X}");
-                            break;
+                            throw new InvalidOperationException();
                     }
                     break;
                 case 0x9000:    // 0x9XY0: Skips the next instruction if VX doesn't equal VY. (Usually the next instruction is a jump to skip a code block)
@@ -205,14 +205,14 @@ namespace SharpEight
                     switch (Opcode & 0x00FF)
                     {
                         case 0x009E:    // 0xEX9E: Skips the next instruction if the key stored in VX is pressed. (Usually the next instruction is a jump to skip a code block)
-                            ProgramCounter += Keys[Registers[(Opcode & 0x0F00) >> 8]] != 0 ? 4 : 2;
+                            ProgramCounter += (Keys[Registers[(Opcode & 0x0F00) >> 8]] != 0) ? 4 : 2;
                             break;
                         case 0x00A1:    // 0xEXA1: Skips the next instruction if the key stored in VX isn't pressed. (Usually the next instruction is a jump to skip a code block)
-                            ProgramCounter += Keys[Registers[(Opcode & 0x0F00) >> 8]] == 0 ? 4 : 2;
+                            ProgramCounter += (Keys[Registers[(Opcode & 0x0F00) >> 8]] == 0) ? 4 : 2;
                             break;
                         default:
                             Console.WriteLine($"Unknown Opcode [0xE000]: 0x{Opcode:X}");
-                            break;
+                            throw new InvalidOperationException();
                     }
                     break;
                 case 0xF000:
@@ -287,12 +287,12 @@ namespace SharpEight
                             break;
                         default:
                             Console.WriteLine($"Unknown Opcode [0xF000]: 0x{Opcode:X}");
-                            break;
+                            throw new InvalidOperationException();
                     }
                     break;
                 default:
                     Console.WriteLine($"Unkonwn Opcode 0x{Opcode:X}");
-                    break;
+                    throw new InvalidOperationException();
             }
 
             //Update timers.
@@ -333,7 +333,7 @@ namespace SharpEight
             }
             else
             {
-                Array.ConstrainedCopy(binaries, 0, Memory, 0 + 512,binaries.Length);
+                Array.Copy(binaries, 0, Memory, 0 + 512,binaries.Length);
                 Console.WriteLine("Success!");
                 return true;
             }
