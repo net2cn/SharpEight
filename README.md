@@ -17,7 +17,7 @@ You can find more ROMs at this [repo](https://github.com/dmatlack/chip8)
 ![Brick](./img/Brick.png)
 
 # Known issues
-- Keyboard support seems to be broken.
+- Keyboard support seems broken.
 
 Any contributions are welcome.
 
