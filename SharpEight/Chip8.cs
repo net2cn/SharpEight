@@ -190,11 +190,14 @@ namespace SharpEight
                         {
                             if ((pixel & (0x80 >> xi)) != 0)
                             {
-                                if (Gfx[(x + xi + ((y + yi) * 64))] == 1)
+                                if ((x + xi + ((y + yi) * 64)) < 64 * 32)   // Prevent overflow.
                                 {
-                                    Registers[0xF] = 1;
+                                    if (Gfx[(x + xi + ((y + yi) * 64))] == 1)
+                                    {
+                                        Registers[0xF] = 1;
+                                    }
+                                    Gfx[x + xi + ((y + yi) * 64)] ^= 1;
                                 }
-                                Gfx[x + xi + ((y + yi) * 64)] ^= 1;
                             }
                         }
                     }

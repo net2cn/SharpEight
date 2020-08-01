@@ -16,9 +16,6 @@ You can find more ROMs at this [repo](https://github.com/dmatlack/chip8)
 ![Maze](./img/Maze.png)
 ![Brick](./img/Brick.png)
 
-# Known issues
-- Keyboard support seems broken.
-
 Any contributions are welcome.
 
 2019-2020, net2cn.
